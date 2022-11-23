@@ -262,6 +262,12 @@ const HomeScreen = () => {
             {scanData && <Text style={styles.friendTitle}>Your new friends info:</Text>}
             {scanData && <View><Text> UID: {scanData.uid}, Name: {scanData.name}, pushToken: {scanData.pushToken}</Text></View> }
     <TouchableOpacity
+        onPress={() => navigation.navigate('Background')}
+        style={[styles.button, styles.backgroundButton]}
+    >
+        <Text style={styles.signoutButtonText}>Background fetch</Text>
+    </TouchableOpacity>
+    <TouchableOpacity
         onPress={handleSignOut}
         style={[styles.button, styles.signoutButton]}
     >
@@ -307,7 +313,16 @@ const styles = StyleSheet.create({
         borderColor: '#0782F9',
         borderWidth: 2,
         width: '100%',
-        marginTop: 180,
+        marginTop: 5,
+        marginBottom: 25
+    },
+    backgroundButton: {
+        backgroundColor: '#fff',
+        marginTop: 5,
+        borderColor: '#0782F9',
+        borderWidth: 2,
+        width: '100%',
+        marginTop: 160,
         marginBottom: 25
     },
     button2: {

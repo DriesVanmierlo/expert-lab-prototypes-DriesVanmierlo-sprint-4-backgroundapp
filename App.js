@@ -15,6 +15,8 @@ import QRCodeScreen from './screens/QRCodeScreen';
 import ScanScreen from './screens/ScanScreen';
 import FriendScreen from './screens/FriendScreen';
 
+import BackgroundFetchScreen from './screens/BackgroundFetchScreen';
+
 import * as Notifications from 'expo-notifications';
 
 import * as Linking from 'expo-linking'
@@ -62,6 +64,7 @@ React.useEffect(() => {
         <Stack.Screen name="Signup" component={SignupScreen} />
         <Stack.Screen name="Otp" component={PhoneScreen} options={{presentation: 'modal'}} />
         <Stack.Screen options={{ headerShown: false }} name="Home" component={HomeScreen} />
+        <Stack.Screen name="Background" component={BackgroundFetchScreen} options={{presentation: 'modal'}} />
         <Stack.Screen name="Friend" component={FriendScreen} />
         <Stack.Screen name="QRCode" component={QRCodeScreen} options={{presentation: 'modal'}} />
         <Stack.Screen name="Scan" component={ScanScreen} options={{presentation: 'modal'}} />
