@@ -39,6 +39,25 @@ export default function BackgroundFetchScreen () {
 // Note: This needs to be called in the global scope (e.g outside of your React components)
 TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
     const now = Date.now();
+
+    const backgroundAvailable = await Location.isBackgroundLocationAvailableAsync()
+    console.log("Is back ground available: ", backgroundAvailable)
+
+    // const currentPosition = await Location.getCurrentPositionAsync()
+    // console.log("CURRRRRRRR: ",currentPosition.coords)
+    
+    const currentPosition = await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+        // For better logs, we set the accuracy to the most sensitive option
+        accuracy: Location.Accuracy.BestForNavigation,
+        // Make sure to enable this notification if you want to consistently track in the background
+        showsBackgroundLocationIndicator: true,
+        foregroundService: {
+          notificationTitle: "Location",
+          notificationBody: "Location tracking in background",
+          notificationColor: "#fff",
+        },
+      })
+    console.log("CURRRRRRRR: ", currentPosition)
   
     const user = {
         "location": {
@@ -67,6 +86,8 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
       if (location) {
         console.log("Location in background", location.coords)
         setPosition(location.coords)
+        console.log("LOCATION: ",location)
+        return location
       }
     }
   })
