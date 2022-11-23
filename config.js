@@ -114,3 +114,8 @@ export async function addPhotoURLToCurrentUser (user, uid){
     // await setDoc(doc(db, 'users', uid), {user})
 }
 
+export async function updateUserLocation (user, uid){
+    const userRef = doc(db, 'users', uid)
+    await setDoc(userRef, { user }, {merge: true})
+}
+

@@ -30,7 +30,8 @@
     "react-native-webview": "^11.23.1",
     "expo-linking": "~3.2.3",
     "expo-task-manager": "~10.2.1",
-    "expo-background-fetch": "~10.2.0"
+    "expo-background-fetch": "~10.2.0",
+    "expo-location": "~14.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
