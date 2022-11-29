@@ -4,7 +4,7 @@ import 'firebase/compat/firestore';
 import { getAuth, updateProfile } from "firebase/compat/auth";
 import { ref, uploadBytes, getDownloadURL } from 'firebase/compat/storage';
 
-import { collection, doc, setDoc, getDoc } from "firebase/firestore"; 
+import { collection, doc, setDoc, getDoc, query, orderBy, limit } from "firebase/firestore"; 
 
 export const firebaseConfig = {
     apiKey: "AIzaSyDFGiabw3T5F3tPw3dYBw7QZ2Y0YXe21oM",
@@ -118,4 +118,32 @@ export async function updateUserLocation (user, uid){
     const userRef = doc(db, 'users', uid)
     await setDoc(userRef, { user }, {merge: true})
 }
+
+export async function getUsers() {
+    let allUsers = [];
+
+    const snapshot = await db.collection("users").get()
+    return snapshot.docs.map(doc => doc.data())
+
+
+    // const usersRef = collection(db, "users")
+    // const q = query(usersRef, orderBy('createdAt'), limit(25))
+
+        
+    // const docSnap = await getDocs(q)
+    // docSnap.forEach(doc => {
+    //     console.log(doc.data())
+    // })
+
+
+  
+    // db.collection("users").get().then((data) => {
+    //   data.forEach((doc) => {
+    //     console.log("DOC: ", doc)
+    //     allUsers.push(doc);
+    //   });
+    //   return allUsers;
+    // })
+    // .catch((error) => console.log(error));
+  }
 

@@ -5,7 +5,7 @@ import React, {useState, useEffect} from 'react'
 import { useNavigation } from '@react-navigation/native'
 
 import * as ImagePicker from 'expo-image-picker';
-import { firebaseConfig, auth, upload, saveUser, getUser, addPhotoURLToCurrentUser } from '../config'
+import { firebaseConfig, auth, upload, saveUser, getUser, addPhotoURLToCurrentUser, getUsers } from '../config'
 
 import QRCode from 'react-native-qrcode-svg'
 import { BarCodeScanner } from 'expo-barcode-scanner'
@@ -136,6 +136,12 @@ const HomeScreen = () => {
 
         setUserData(userDatas)
         addPhotoToCurrentUser()
+    }
+    const getAllUsers = async () => {
+        const allUsers = await getUsers()
+        allUsers.forEach((user) => {
+            console.log(user.user)
+        })
     }
 
     const addPhotoToCurrentUser = async () => {
@@ -272,6 +278,12 @@ const HomeScreen = () => {
         style={[styles.button, styles.signoutButton]}
     >
         <Text style={styles.signoutButtonText}>Sign out</Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+        onPress={getAllUsers}
+        style={[styles.button, styles.signoutButton]}
+    >
+        <Text style={styles.signoutButtonText}>Get all users</Text>
     </TouchableOpacity>
         </ScrollView>
   )
