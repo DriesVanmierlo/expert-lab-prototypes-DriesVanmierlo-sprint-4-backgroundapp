@@ -6,7 +6,7 @@ import { uploadBytes, getDownloadURL } from 'firebase/compat/storage';
 
 import { collection, doc, setDoc, getDoc, query, orderBy, limit } from "firebase/firestore"; 
 import { useState } from 'react';
-import { getDatabase, ref, set } from "firebase/database"
+import { getDatabase, ref, remove, set } from "firebase/database"
 import { initializeApp } from "firebase/app";
 
 
@@ -157,9 +157,9 @@ export async function getUsers() {
     //   return allUsers;
     // })
     // .catch((error) => console.log(error));
-  }
+}
 
-  export function saveNewAlarm(location, uid){
+export function saveNewAlarm(location, uid){
     set(ref(realtimeDB, 'location/' + uid), {
         latitude: location.latitude,
         longitude: location.longitude,
@@ -169,4 +169,8 @@ export async function getUsers() {
     .catch ((error) => {
         alert(error)
     })
+}
+
+export function deleteAlarm(uid){
+    remove(ref(realtimeDB, 'location/' + uid))
 }

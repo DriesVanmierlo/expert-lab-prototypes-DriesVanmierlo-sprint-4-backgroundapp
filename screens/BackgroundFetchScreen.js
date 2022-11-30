@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
-import { auth, updateUserLocation,saveNewAlarm } from '../config';
+import { auth, updateUserLocation,saveNewAlarm, deleteAlarm } from '../config';
 import * as Location from "expo-location"
 // import Geolocation from 'react-native-geolocation-service';
 
@@ -102,6 +102,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
 
   React.useEffect(() => {
     checkStatusAsync();
+    startBackgroundUpdate();
   }, []);
 
   const checkStatusAsync = async () => {
@@ -192,6 +193,11 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
         saveNewAlarm(location, auth.currentUser.uid)
       }
 
+      const removeAlarm = () => {
+        setAlarmSend(false)
+        deleteAlarm(auth.currentUser.uid)
+      }
+
   return (
     <View style={styles.screen}>
       <View style={styles.textContainer}>
@@ -238,6 +244,13 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
     >
         <Text style={styles.signoutButtonText}>SEND ALARM</Text>
     </TouchableOpacity>
+      <TouchableOpacity
+        onPress={removeAlarm}
+        style={[styles.button, styles.backgroundButton]}
+        disabled={!alarmSend}
+    >
+        <Text style={styles.signoutButtonText}>Cancel alarm</Text>
+    </TouchableOpacity>
     </View>
   );
 }
@@ -269,7 +282,7 @@ backgroundButton: {
     borderColor: '#0782F9',
     borderWidth: 2,
     width: '100%',
-    marginTop: 160,
+    marginTop: 15,
     marginBottom: 25
 },
 signoutButtonText:{
