@@ -2,8 +2,9 @@ import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
-import { auth } from '../config';
+import { auth, updateUserLocation } from '../config';
 import * as Location from "expo-location"
+// import Geolocation from 'react-native-geolocation-service';
 
 
 const BACKGROUND_FETCH_TASK = 'background-fetch';
@@ -44,30 +45,33 @@ TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
     console.log("Is back ground available: ", backgroundAvailable)
 
     // const currentPosition = await Location.getCurrentPositionAsync()
+    // const currentPosition = Geolocation.getCurrentPosition()
     // console.log("CURRRRRRRR: ",currentPosition.coords)
     
-    const currentPosition = await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-        // For better logs, we set the accuracy to the most sensitive option
-        accuracy: Location.Accuracy.BestForNavigation,
-        // Make sure to enable this notification if you want to consistently track in the background
-        showsBackgroundLocationIndicator: true,
-        foregroundService: {
-          notificationTitle: "Location",
-          notificationBody: "Location tracking in background",
-          notificationColor: "#fff",
-        },
-      })
-    console.log("CURRRRRRRR: ", currentPosition)
-  
-    const user = {
+    // const currentPosition = await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+    //       // For better logs, we set the accuracy to the most sensitive option
+    //       accuracy: Location.Accuracy.BestForNavigation,
+    //       // Make sure to enable this notification if you want to consistently track in the background
+    //       showsBackgroundLocationIndicator: true,
+    //       foregroundService: {
+    //           notificationTitle: "Location",
+    //           notificationBody: "Location tracking in background",
+    //           notificationColor: "#fff",
+    //         },
+    //       })
+    // console.log("currentLocation: ",currentPosition)
+    console.log("currentPosition: ",position)
+        
+    let user = {
         "location": {
-            "latitude": position.latitude,
-            "longitude": position.longitude
+            "latitude": position.coords.latitude,
+            "longitude": position.coords.longitude,
+            "timestamp": position.timestamp
         }
     }
     
-    console.log(`Got background fetch call at date: ${new Date(now).toISOString()} from user ${auth.currentUser.uid} and location ${user.location.latitude}`);
-    
+    console.log(`Got background fetch call at date: ${new Date(now).toISOString()} / ${position.timestamp} from user ${auth.currentUser.uid} and location ${user.location.latitude},${user.location.longitude} `);
+    await updateUserLocation(user, auth.currentUser.uid)
   
     // Be sure to return the successful result type!
     return BackgroundFetch.BackgroundFetchResult.NewData;
@@ -84,16 +88,15 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
       const { locations } = data
       const location = locations[0]
       if (location) {
-        console.log("Location in background", location.coords)
-        setPosition(location.coords)
-        console.log("LOCATION: ",location)
+        setPosition(location)
+        // console.log(position)
         return location
       }
     }
   })
 
   useEffect(() => {
-    console.log("CURRENT POSITION: ",position)
+    // console.log("CURRENT POSITION: ",position)
   }, [position])
 
   React.useEffect(() => {
