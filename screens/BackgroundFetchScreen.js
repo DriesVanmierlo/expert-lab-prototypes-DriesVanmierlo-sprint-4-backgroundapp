@@ -4,6 +4,7 @@ import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 import { auth, updateUserLocation,saveNewAlarm, deleteAlarm } from '../config';
 import * as Location from "expo-location"
+import { async } from '@firebase/util';
 // import Geolocation from 'react-native-geolocation-service';
 
 
@@ -34,8 +35,9 @@ async function unregisterBackgroundFetchAsync() {
 export default function BackgroundFetchScreen () {
   const [isRegistered, setIsRegistered] = React.useState(false);
   const [status, setStatus] = React.useState(null);
-  const [position, setPosition] = useState({})
+  const [position, setPosition] = useState(null)
   const [alarmSend, setAlarmSend] = useState(false)
+  const [onOpening, setOnOpening] = useState(true)
 
   // 1. Define the task by providing a name and the function that should be executed
 // Note: This needs to be called in the global scope (e.g outside of your React components)
@@ -97,8 +99,23 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
   })
 
   useEffect(() => {
-    // console.log("CURRENT POSITION: ",position)
+    if(position && onOpening){
+      setOnOpening(false)
+      updateLocationOnOpening()
+    }
   }, [position])
+
+  const updateLocationOnOpening = async () => {
+    console.log(position)
+    let user = {
+      "location": {
+          "latitude": position.coords.latitude,
+          "longitude": position.coords.longitude,
+          "timestamp": position.timestamp
+      }
+    }
+    await updateUserLocation(user, auth.currentUser.uid)
+  }
 
   React.useEffect(() => {
     checkStatusAsync();
