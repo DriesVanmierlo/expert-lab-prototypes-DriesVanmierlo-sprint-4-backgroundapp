@@ -2,9 +2,14 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import { getAuth, updateProfile } from "firebase/compat/auth";
-import { ref, uploadBytes, getDownloadURL } from 'firebase/compat/storage';
+import { uploadBytes, getDownloadURL } from 'firebase/compat/storage';
 
 import { collection, doc, setDoc, getDoc, query, orderBy, limit } from "firebase/firestore"; 
+import { useState } from 'react';
+import { getDatabase, ref, set } from "firebase/database"
+import { initializeApp } from "firebase/app";
+
+
 
 export const firebaseConfig = {
     apiKey: "AIzaSyDFGiabw3T5F3tPw3dYBw7QZ2Y0YXe21oM",
@@ -16,13 +21,20 @@ export const firebaseConfig = {
     appId: "1:654422240311:web:c829281cdccbe3795623b2"
 };
 
+let app
+let realtimeDB
+
 if(!firebase.apps.length){
     firebase.initializeApp(firebaseConfig);
+    app = initializeApp(firebaseConfig);
+    realtimeDB = getDatabase(app);
 }
+
 
 const auth = firebase.auth()
 const storage = firebase.storage()
 const db = firebase.firestore()
+
 
 export { auth };
 
@@ -147,3 +159,14 @@ export async function getUsers() {
     // .catch((error) => console.log(error));
   }
 
+  export function saveNewAlarm(location, uid){
+    set(ref(realtimeDB, 'location/' + uid), {
+        latitude: location.latitude,
+        longitude: location.longitude,
+        timestamp: location.timestamp,
+        firstname: location.firstname
+    })
+    .catch ((error) => {
+        alert(error)
+    })
+}

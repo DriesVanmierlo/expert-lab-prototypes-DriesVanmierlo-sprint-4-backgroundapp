@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
-import { auth, updateUserLocation } from '../config';
+import { auth, updateUserLocation,saveNewAlarm } from '../config';
 import * as Location from "expo-location"
 // import Geolocation from 'react-native-geolocation-service';
 
@@ -35,6 +35,7 @@ export default function BackgroundFetchScreen () {
   const [isRegistered, setIsRegistered] = React.useState(false);
   const [status, setStatus] = React.useState(null);
   const [position, setPosition] = useState({})
+  const [alarmSend, setAlarmSend] = useState(false)
 
   // 1. Define the task by providing a name and the function that should be executed
 // Note: This needs to be called in the global scope (e.g outside of your React components)
@@ -178,6 +179,19 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
         }
       }
 
+      const saveAlarm = () => {
+        setAlarmSend(true)
+
+        const location = {
+          "latitude": position.coords.latitude,
+          "longitude": position.coords.longitude,
+          "timestamp": position.timestamp,
+          "firstname": auth.currentUser.displayName
+        }
+
+        saveNewAlarm(location, auth.currentUser.uid)
+      }
+
   return (
     <View style={styles.screen}>
       <View style={styles.textContainer}>
@@ -202,23 +216,28 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
 
 
       <View style={styles.container}>
-      <View style={styles.controls}>
-      <Text>Longitude: {position?.longitude}</Text>
-      <Text>Latitude: {position?.latitude}</Text>
-      <View style={styles.separator} />
-      <Button
-        onPress={startBackgroundUpdate}
-        title="Start in background"
-        color="green"
-      />
-      <View style={styles.separator} />
-      <Button
-        onPress={stopBackgroundUpdate}
-        title="Stop in background"
-        color="red"
-      />
-    </View>
-    </View>
+        <View style={styles.controls}>
+        <View style={styles.separator} />
+          <Button
+            onPress={startBackgroundUpdate}
+            title="Start in background"
+            color="green"
+          />
+          <View style={styles.separator} />
+          <Button
+            onPress={stopBackgroundUpdate}
+            title="Stop in background"
+            color="red"
+          />
+        </View>
+      </View>
+      <TouchableOpacity
+        onPress={saveAlarm}
+        style={[styles.button, styles.backgroundButton]}
+        disabled={alarmSend}
+    >
+        <Text style={styles.signoutButtonText}>SEND ALARM</Text>
+    </TouchableOpacity>
     </View>
   );
 }
@@ -236,4 +255,26 @@ const styles = StyleSheet.create({
   boldText: {
     fontWeight: "bold",
   },
+  button: {
+    backgroundColor: '#0782F9',
+    width: '60%',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 5,
+},
+backgroundButton: {
+    backgroundColor: '#fff',
+    marginTop: 5,
+    borderColor: '#0782F9',
+    borderWidth: 2,
+    width: '100%',
+    marginTop: 160,
+    marginBottom: 25
+},
+signoutButtonText:{
+  color: '#0782F9',
+  fontWeight: '700',
+  fontSize: 16
+},
 });
