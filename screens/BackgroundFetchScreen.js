@@ -217,11 +217,27 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
         }
 
         saveNewAlarm(location, auth.currentUser.uid)
+
+        showMessage({
+          message: "Alarm sent!",
+          description: "Others are getting notified of your alarm.",
+          type: "default",
+          backgroundColor: "#fb060e", // background color
+          color: "#ffffff", // text color
+        })
       }
 
       const removeAlarm = () => {
         setAlarmSend(false)
         deleteAlarm(auth.currentUser.uid)
+
+        showMessage({
+          message: "Alarm cancelled",
+          description: "You succesfully removed your alarm.",
+          type: "default",
+          backgroundColor: "#f27300", // background color
+          color: "#ffffff", // text color
+        })
       }
 
   return (
@@ -308,7 +324,7 @@ backgroundButton: {
     marginTop: 5,
     borderColor: '#0782F9',
     borderWidth: 2,
-    width: '100%',
+    width: '80%',
     marginTop: 15,
     marginBottom: 25
 },
