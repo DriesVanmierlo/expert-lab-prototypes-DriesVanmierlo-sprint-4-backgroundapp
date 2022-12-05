@@ -6,6 +6,7 @@ import { auth, updateUserLocation,saveNewAlarm, deleteAlarm } from '../config';
 import * as Location from "expo-location"
 import { async } from '@firebase/util';
 // import Geolocation from 'react-native-geolocation-service';
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 
 
 const BACKGROUND_FETCH_TASK = 'background-fetch';
@@ -115,6 +116,14 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
       }
     }
     await updateUserLocation(user, auth.currentUser.uid)
+
+    showMessage({
+      message: "Location updated!",
+      description: "You can now send an alarm or help others",
+      type: "default",
+      backgroundColor: "#32cd33", // background color
+      color: "#ffffff", // text color
+    })
   }
 
   React.useEffect(() => {
@@ -238,7 +247,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
       />
 
 
-      <View style={styles.container}>
+      {/* <View style={styles.container}>
         <View style={styles.controls}>
         <View style={styles.separator} />
           <Button
@@ -253,7 +262,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
             color="red"
           />
         </View>
-      </View>
+      </View> */}
       <TouchableOpacity
         onPress={saveAlarm}
         style={[styles.button, styles.backgroundButton]}
@@ -268,6 +277,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
     >
         <Text style={styles.signoutButtonText}>Cancel alarm</Text>
     </TouchableOpacity>
+    <FlashMessage position="top" duration={4000} />
     </View>
   );
 }
